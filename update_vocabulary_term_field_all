@@ -1,0 +1,78 @@
+<?php
+
+/*
+ * function to modify all terms in a vocabulary called us_states 
+ * and populate the shipper field. To modify, do a find and replace to 
+ * change "value1, value2, etc" to your desired values
+ */
+function populate_states_shippers_field() {
+  $state_shippers = array(
+    'Alabama'=>'Other',
+    'Alaska'=>'Value1',
+    'Arizona'=>'Value2',
+    'Arkansas'=>'Other',
+    'California'=>'Value1',
+    'Colorado'=>'Value1',
+    'Connecticut'=>'Other',
+    'Delaware'=>'Other',
+    'Florida'=>'Value1',
+    'Georgia'=>'Value1',
+    'Hawaii'=>'Value1',
+    'Idaho'=>'Value2',
+    'Illinois'=>'Value1',
+    'Indiana'=>'Other',
+    'Iowa'=>'Value2',
+    'Kansas'=>'Value2',
+    'Kentucky'=>'Other',
+    'Louisiana'=>'Value2',
+    'Maine'=>'Value2',
+    'Maryland'=>'Value1',
+    'Massachusetts'=>'Value2',
+    'Michigan'=>'Value1',
+    'Minnesota'=>'Value1',
+    'Mississippi'=>'Other',
+    'Missouri'=>'Value1',
+    'Montana'=>'Other',
+    'Nebraska'=>'Value2',
+    'Nevada'=>'Value2',
+    'New Hampshire'=>'Other',
+    'New Jersey'=>'Other',
+    'New Mexico'=>'Value2',
+    'New York'=>'Value2',
+    'North Carolina'=>'Value1',
+    'North Dakota'=>'Value2',
+    'Ohio'=>'Value2',
+    'Oklahoma'=>'Other',
+    'Oregon'=>'Value2',
+    'Pennsylvania'=>'Other',
+    'Rhode Island'=>'Other',
+    'South Carolina'=>'Value2',
+    'South Dakota'=>'Other',
+    'Tennessee'=>'Value1',
+    'Texas'=>'Value1',
+    'Utah'=>'Value2',
+    'Vermont'=>'Other',
+    'Virginia'=>'Other',
+    'Washington'=>'Value2',
+    'West Virginia'=>'Value2',
+    'Wisconsin'=>'Value2',
+    'Wyoming'=>'Value2',
+  );
+  
+  $voc = taxonomy_vocabulary_machine_name_load('us_states');
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'taxonomy_term')
+    ->propertyCondition('vid', $voc->vid,'=')
+    ->execute();
+  
+  $result = array_keys($result['taxonomy_term']);
+  
+  $terms= taxonomy_term_load_multiple($result);
+  
+  foreach($terms as $term) {
+    $term->field_shipper['und'][0]['value'] = $state_shippers[$term->name];
+    taxonomy_term_save ($term);
+  }
+  
+}
